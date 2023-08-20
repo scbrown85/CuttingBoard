@@ -107,8 +107,12 @@ function calculateBMI(weight, height) {
   
   // Calculate Estimated Weight Change Per Week
   function calculateWeightChangePerWeek(caloricIntake, TDEE) {
+    if (caloricIntake === null || TDEE === null) {
+      return null; // Return "I don't know" if one of the buckets is missing
+    }
     return (caloricIntake - TDEE) / 500;
   }
+  
   
   module.exports = {
     calculateBMI,

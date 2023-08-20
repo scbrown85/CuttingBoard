@@ -1,6 +1,17 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserProfile = require('../models/userProfile');
+const {
+  calculateBMI,
+  calculateBodyFatPercentage,
+  calculateBMR,
+  calculateStartingTDEE,
+  calculateDailyCaloricIntake,
+  calculateProteinIntake,
+  calculateFatsIntake,
+  calculateCarbohydratesIntake,
+  calculateWeightChangePerWeek,
+} = require('../controllers/macronutrientIntakeController'); // Importing the macronutrient intake functions
 
 exports.register = async (req, res) => {
   // Check if the user already exists
@@ -61,6 +72,23 @@ exports.updateProfile = async (req, res) => {
   user.activityLevel = req.body.activityLevel;
   // Other fields can be updated as needed
 
+  // Calculate macronutrient intake based on the updated profile
+  const BMI = calculateBMI(user.weight, user.height);
+  const bodyFatPercentage = calculateBodyFatPercentage(/* parameters based on user profile */);
+  const BMR = calculateBMR(user.age, user.height, user.weight);
+  const startingTDEE = calculateStartingTDEE(user.activityLevel, BMR);
+  const dailyCaloricIntake = calculateDailyCaloricIntake(/* parameters based on user profile */);
+  const proteinIntake = calculateProteinIntake(/* parameters based on user profile */);
+  const fatsIntake = calculateFatsIntake(user.goalWeight, user.currentWeight);
+  const carbohydratesIntake = calculateCarbohydratesIntake(dailyCaloricIntake, proteinIntake, fatsIntake);
+
+  // You can now store these calculated values in the user profile or use them as needed
+  // Example:
+  user.BMI = BMI;
+  user.bodyFatPercentage = bodyFatPercentage;
+  // ... and so on ...
+
+  
   // Save the updated user profile
   await user.save();
 

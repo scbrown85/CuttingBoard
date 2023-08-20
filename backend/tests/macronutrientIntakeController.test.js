@@ -7,7 +7,7 @@ const {
     calculateProteinIntake,
     calculateFatsIntake,
     calculateCarbohydratesIntake,
-    calculateEstimatedWeightChange
+    calculateWeightChangePerWeek
   } = require('../controllers/macronutrientIntakeController');
   
   describe('Macronutrient Intake Controller', () => {
