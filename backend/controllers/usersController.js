@@ -1,18 +1,68 @@
-// UsersController 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const UserProfile = require('../models/userProfile');
 
-exports.register = (req, res) => {
-  // Logic for user registration
+exports.register = async (req, res) => {
+  // Check if the user already exists
+  const existingUser = await UserProfile.findOne({ email: req.body.email });
+  if (existingUser) return res.status(400).send('User already registered.');
+
+  // Hash the password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+  // Create a new user profile
+  const user = new UserProfile({
+    email: req.body.email,
+    password: hashedPassword,
+    // Other fields can be added as needed
+  });
+
+  // Save the user to the database
+  await user.save();
+
+  res.send('User registered successfully.');
 };
 
-exports.login = (req, res) => {
-  // Logic for user login
+exports.login = async (req, res) => {
+  // Find the user by email
+  const user = await UserProfile.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send('Invalid email or password.');
+
+  // Check the password
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) return res.status(400).send('Invalid email or password.');
+
+  // Generate a JWT token
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+
+  res.send(token);
 };
 
-exports.getProfile = (req, res) => {
-  // Logic for retrieving user profile
+exports.getProfile = async (req, res) => {
+  // Find the user by ID
+  const user = await UserProfile.findById(req.userData._id).select('-password');
+  if (!user) return res.status(404).send('User not found.');
+
+  // Send the user profile (excluding the password)
+  res.send(user);
 };
 
-exports.updateProfile = (req, res) => {
-  // Logic for updating user profile
+exports.updateProfile = async (req, res) => {
+  // Find the user by ID
+  const user = await UserProfile.findById(req.userData._id);
+  if (!user) return res.status(404).send('User not found.');
+
+  // Update the user profile with the provided data
+  // You can customize this part based on the fields you want to allow updating
+  user.age = req.body.age;
+  user.weight = req.body.weight;
+  user.height = req.body.height;
+  user.activityLevel = req.body.activityLevel;
+  // Other fields can be updated as needed
+
+  // Save the updated user profile
+  await user.save();
+
+  res.send('User profile updated successfully.');
 };
