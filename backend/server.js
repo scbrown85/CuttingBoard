@@ -1,4 +1,6 @@
 require('dotenv').config(); // Load environment variables
+require('mongoose').set('debug', true);
+
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/users');
@@ -26,14 +28,18 @@ app.use('/mealPlans', mealPlanRoutes);
 app.use('/shoppingLists', shoppingListRoutes);
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://stewartbrown60:rSvroNdRCngVGhO3@cuttingboardcluster.2lsycsf.mongodb.net/?retryWrites=true&w=majority', {
+const password = process.env.MONGODB_PASSWORD;
+mongoose.connect(`mongodb+srv://stewartbrown60:${password}@cuttingboardcluster.2lsycsf.mongodb.net/`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  bufferTimeoutMS: 60000,
+  connectTimeoutMS: 60000,
 })
 .then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('Could not connect to MongoDB', err));
+.catch(error => console.error('Could not connect to MongoDB', error));
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+

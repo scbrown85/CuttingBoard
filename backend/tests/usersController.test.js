@@ -18,6 +18,7 @@ describe('Update Profile', () => {
     it('should update the user profile and calculate macronutrient intake', async () => {
       // Create a new user
       const user = new UserProfile(mockUserData);
+      console.log('Saving user:', user);
       await user.save();
   
       // Mock request and response objects
