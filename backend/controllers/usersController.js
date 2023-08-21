@@ -74,11 +74,11 @@ exports.updateProfile = async (req, res) => {
 
   // Calculate macronutrient intake based on the updated profile
   const BMI = calculateBMI(user.weight, user.height);
-  const bodyFatPercentage = calculateBodyFatPercentage(/* parameters based on user profile */);
+  const bodyFatPercentage = calculateBodyFatPercentage(user.gender, user.waist, user.hips, user.neck, user.height);
   const BMR = calculateBMR(user.age, user.height, user.weight);
   const startingTDEE = calculateStartingTDEE(user.activityLevel, BMR);
-  const dailyCaloricIntake = calculateDailyCaloricIntake(/* parameters based on user profile */);
-  const proteinIntake = calculateProteinIntake(/* parameters based on user profile */);
+  const dailyCaloricIntake = calculateDailyCaloricIntake(user.goalWeight, user.currentWeight, user.goalDate, user.startDate, user.TDEE);
+  const proteinIntake = calculateProteinIntake(user.gender, user.goalWeight, user.currentWeight, user.bodyFatPercentage);
   const fatsIntake = calculateFatsIntake(user.goalWeight, user.currentWeight);
   const carbohydratesIntake = calculateCarbohydratesIntake(dailyCaloricIntake, proteinIntake, fatsIntake);
 
@@ -86,6 +86,14 @@ exports.updateProfile = async (req, res) => {
   // Example:
   user.BMI = BMI;
   user.bodyFatPercentage = bodyFatPercentage;
+  user.BMR = BMR;
+  user.startingTDEE = startingTDEE;
+  user.dailyCaloricIntake = dailyCaloricIntake;
+  user.proteinIntake = proteinIntake;
+  user.fatsIntake = fatsIntake;
+  user.carbohydratesIntake = carbohydratesIntake;
+  user.weightChangePerWeek = weightChangePerWeek;
+
   // ... and so on ...
 
   
