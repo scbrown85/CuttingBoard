@@ -26,7 +26,7 @@ app.use('/mealPlans', mealPlanRoutes);
 app.use('/shoppingLists', shoppingListRoutes);
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1/cuttingboard', {
+mongoose.connect('mongodb+srv://stewartbrown60:rSvroNdRCngVGhO3@cuttingboardcluster.2lsycsf.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

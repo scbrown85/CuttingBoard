@@ -42,8 +42,8 @@ describe('Update Profile', () => {
       const updatedUser = await UserProfile.findById(user._id);
       expect(updatedUser.age).toBe(26);
       // Add other checks for calculated fields
-    }, 10000); // 10 seconds timeout
-  });
-  
+    }, 60000); // 60 seconds timeout
+});
+
 
   
